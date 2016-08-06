@@ -203,6 +203,19 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         }
 
     }
+    public void drawFinish() {
+        Canvas canvas = m_holder.lockCanvas(null);
+        if (canvas != null) {
+            canvas.drawColor(Color.BLACK);
+            canvas.drawBitmap(background, 0, 0, null);
+            Paint textPaint = new Paint();
+            textPaint.setColor(Color.YELLOW);
+            canvas.drawText("You won!", getWidth()/2, getHeight()/2, textPaint);
+            ship.draw(canvas);
+            m_holder.unlockCanvasAndPost(canvas);
+        }
+
+    }
 
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction()== MotionEvent.ACTION_DOWN) {
@@ -217,7 +230,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             }
         }
         touch_x = (int)event.getX();
-        return true; //return super.onTouchEvent(event);
+        return true;
     }
 
 }

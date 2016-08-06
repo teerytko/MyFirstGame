@@ -42,16 +42,20 @@ public class MainThread extends Thread {
                         GameSurfaceView.Droid d = m_panel.droids.get(j);
                         if (d.hits(s)) {
                             m_panel.sounds.playShortResource(R.raw.slave_seismic);
-
                             m_panel.droids.remove(j);
                             j--;
                         }
                     }
-
                 }
 
                 // render state to the screen
                 m_panel.draw();
+
+                if (m_panel.droids.size() == 0) {
+                    // All droids destroyed -> level done
+                    m_panel.drawFinish();
+                    running = false;
+                }
                 Thread.sleep(10, 0);
             }
             catch (InterruptedException e) {
