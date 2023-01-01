@@ -44,6 +44,22 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             return false;
         }
     }
+    public class Stats extends Obj {
+        private int energy = 100;
+        private int shots  = 100;
+        public Stats(int x, int y) {
+            super(x, y, x+40, y+100);
+        }
+        public void set_shots(int s) { shots = s; }
+        public void set_energy(int e) { energy = e; }
+        public void draw(Canvas canvas) {
+            Paint shotPaint = new Paint();
+            shotPaint.setColor(Color.GREEN);
+            canvas.drawRect(m_x, m_y, m_x+10, m_y+energy, shotPaint);
+            shotPaint.setColor(Color.YELLOW);
+            canvas.drawRect(m_x+30, m_y, m_x+40, m_y+shots, shotPaint);
+        }
+    }
 
     public class Shot extends Obj {
         public Shot(int x, int y, int w, int h) {
@@ -60,7 +76,6 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         private int tickCount;
         public Droid(int x, int y, int w, int h) {
             super(x, y, w, h);
-
         }
         public void draw(Canvas canvas) {
             canvas.drawBitmap(droid, m_x, m_y, null);
@@ -81,17 +96,16 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             else
                 tickCount = 0;
             tickCount++;
-
         }
-
     }
 
     public class Spaceship extends Obj {
+        protected Stats ship_stats = null;
         int LOAD_TIME = 100;
         Integer shots[] = {LOAD_TIME, LOAD_TIME};
-        public Spaceship(int x, int y, int w, int h) {
-
+        public Spaceship(int x, int y, int w, int h, Stats stats) {
             super(x, y, w, h);
+            ship_stats = stats;
         }
         public void draw(Canvas canvas) {
             canvas.drawBitmap(spaceship, m_x - m_w / 2, m_y, null);
@@ -100,7 +114,6 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             m_x += (target_x-m_x)/5;
         }
         public boolean shoot() {
-            Arrays.sort(shots, Collections.reverseOrder());
             // if we have loaded shot
             if (shots[0] == LOAD_TIME) {
                 // shoot it
@@ -110,10 +123,15 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             return false;
         }
         public void load_cycle() {
+            int s = 0;
+
+            Arrays.sort(shots, Collections.reverseOrder());
             for (int i=0; i < shots.length; i++) {
                 if (shots[i] < LOAD_TIME)
                     shots[i]++;
             }
+            s += shots[0];
+            ship_stats.set_shots(s);
         }
 
     }
@@ -128,6 +146,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     public int touch_x, touch_y_start = 0;
     public ArrayList<Shot> shots = new ArrayList();
     public ArrayList<Droid> droids  = new ArrayList();
+    public Stats stats = null;
 
     public GameSurfaceView(Context context) {
         super(context);
@@ -179,6 +198,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         int newWidth = Math.round(tmpBmp.getWidth()/scale);
         int newHeight = Math.round(tmpBmp.getHeight()/scale);
         background = Bitmap.createScaledBitmap(tmpBmp, newWidth, newHeight, true);
+        stats = new Stats(50, getHeight()-150);
+
         // starting positions
         int droid_y = getHeight() / 12;
         int droid_x = getWidth() / 12;
@@ -187,7 +208,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         }
         int ship_x = getWidth() / 2;
         int ship_y = getHeight() - getHeight() / 12 - spaceship.getWidth();
-        ship = new Spaceship(ship_x, ship_y, spaceship.getWidth(), spaceship.getHeight());
+        ship = new Spaceship(ship_x, ship_y, spaceship.getWidth(), spaceship.getHeight(), stats);
         touch_x = getWidth() / 2 - spaceship.getWidth();
         m_thread.setRunning(true);
         m_thread.start();
@@ -217,6 +238,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         if (canvas != null) {
             canvas.drawColor(Color.BLACK);
             canvas.drawBitmap(background, 0, 0, null);
+            stats.draw(canvas);
             for (int j=0; j<droids.size(); j++) {
                 droids.get(j).draw(canvas);
             }
@@ -224,13 +246,11 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                 shots.get(i).draw(canvas);
             }
             ship.draw(canvas);
-            ship.load_cycle();
             m_holder.unlockCanvasAndPost(canvas);
         }
-
     }
     public void drawFinish() {
-        final float testTextSize = 48f;
+        final float testTextSize = 58f;
         Canvas canvas = m_holder.lockCanvas(null);
         if (canvas != null) {
             canvas.drawColor(Color.BLACK);

@@ -22,6 +22,7 @@ public class MainThread extends Thread {
         int dy = 5;
         while (running) {
             try {
+                m_panel.ship.load_cycle();
                 // update game state
                 for (int i=0; i<m_panel.droids.size(); i++) {
                     GameSurfaceView.Droid d = m_panel.droids.get(i);
