@@ -20,6 +20,7 @@ public class SoundPoolPlayer {
         this.mShortPlayer = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
 
         mSounds.put(R.raw.blaster_solo, this.mShortPlayer.load(pContext, R.raw.blaster_solo, 1));
+        mSounds.put(R.raw.blaster_fail, this.mShortPlayer.load(pContext, R.raw.blaster_fail, 1));
         mSounds.put(R.raw.slave_seismic, this.mShortPlayer.load(pContext, R.raw.slave_seismic, 1));
     }
 

@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="EntryPointsManager">
-    <entry_points version="2.0" />
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/teemur/StudioProjects/MyFirstGame/app/src/main/res/layout/activity_main.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/teemur/StudioProjects/MyFirstGame/app/src/main/res/layout/activity_main_game.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/teemur/StudioProjects/MyFirstGame/app/src/main/res/menu/menu_main.xml" value="0.13020833333333334" />
+      </map>
+    </option>
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">

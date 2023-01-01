@@ -15,9 +15,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        ImageView iv = (ImageView) findViewById(R.id.imageView);
-//        iv.setImageResource(R.drawable.fists_wall_720);
     }
 
 

@@ -1,5 +1,7 @@
 package com.intel.tsrytkon.myfirstgame;
 
+import static java.util.Arrays.sort;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,6 +17,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by tsrytkon on 10/25/15.
@@ -83,7 +87,10 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     }
 
     public class Spaceship extends Obj {
+        int LOAD_TIME = 100;
+        Integer shots[] = {LOAD_TIME, LOAD_TIME};
         public Spaceship(int x, int y, int w, int h) {
+
             super(x, y, w, h);
         }
         public void draw(Canvas canvas) {
@@ -92,6 +99,23 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         public void move(int target_x) {
             m_x += (target_x-m_x)/5;
         }
+        public boolean shoot() {
+            Arrays.sort(shots, Collections.reverseOrder());
+            // if we have loaded shot
+            if (shots[0] == LOAD_TIME) {
+                // shoot it
+                shots[0] = 0;
+                return true;
+            }
+            return false;
+        }
+        public void load_cycle() {
+            for (int i=0; i < shots.length; i++) {
+                if (shots[i] < LOAD_TIME)
+                    shots[i]++;
+            }
+        }
+
     }
     public SoundPoolPlayer sounds;
     private Bitmap droid;
@@ -141,6 +165,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        // Initialize game objects
         System.out.println("surfaceCreated");
         m_holder = holder;
         // Set the droid initial position
@@ -199,17 +224,20 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                 shots.get(i).draw(canvas);
             }
             ship.draw(canvas);
+            ship.load_cycle();
             m_holder.unlockCanvasAndPost(canvas);
         }
 
     }
     public void drawFinish() {
+        final float testTextSize = 48f;
         Canvas canvas = m_holder.lockCanvas(null);
         if (canvas != null) {
             canvas.drawColor(Color.BLACK);
             canvas.drawBitmap(background, 0, 0, null);
             Paint textPaint = new Paint();
             textPaint.setColor(Color.YELLOW);
+            textPaint.setTextSize(testTextSize);
             canvas.drawText("You won!", getWidth()/2, getHeight()/2, textPaint);
             ship.draw(canvas);
             m_holder.unlockCanvasAndPost(canvas);
@@ -225,8 +253,13 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             int touch_y_end = (int)event.getY();
             System.out.println("Y diff "+ (touch_y_end-touch_y_start));
             if ((touch_y_end-touch_y_start) > 60) {
-                shots.add(new Shot(ship.m_x, ship.m_y, spaceship.getWidth(), spaceship.getHeight()));
-                sounds.playShortResource(R.raw.blaster_solo);
+                if ( ship.shoot() ) {
+                    shots.add(new Shot(ship.m_x, ship.m_y, spaceship.getWidth(), spaceship.getHeight()));
+                    sounds.playShortResource(R.raw.blaster_solo);
+                }
+                else {
+                    sounds.playShortResource(R.raw.blaster_fail);
+                }
             }
         }
         touch_x = (int)event.getX();
