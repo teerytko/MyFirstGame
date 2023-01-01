@@ -1,25 +1,32 @@
-apply plugin: 'com.android.application'
 
+plugins {
+    id 'com.android.application'
+//    id 'kotlin-android'
+}
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1.0"
-
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.intel.tsrytkon.myfirstgame"
-        minSdkVersion 16
-        targetSdkVersion 19
+        minSdkVersion 23
+        targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
     }
     buildTypes {
         release {
             minifyEnabled false
+            //runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:21.0.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }

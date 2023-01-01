@@ -11,7 +11,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
 
 
 /**
