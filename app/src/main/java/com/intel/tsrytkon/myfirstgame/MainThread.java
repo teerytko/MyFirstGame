@@ -27,15 +27,14 @@ public class MainThread extends Thread {
                 for (int i=0; i<m_panel.droids.size(); i++) {
                     GameSurfaceView.Droid d = m_panel.droids.get(i);
                     d.move();
+                    d.shoot();
                 }
 
                 m_panel.ship.move(m_panel.touch_x);
                 for (int i=0; i<m_panel.shots.size(); i++) {
                     GameSurfaceView.Shot s = m_panel.shots.get(i);
-                    if (s.m_y > 0) {
-                        s.m_y -= 15;
-                    }
-                    else {
+                    // move the shot, and remove it if it goes out of bounds
+                    if (!s.move()) {
                         m_panel.shots.remove(i);
                         i--;
                     }
@@ -47,6 +46,12 @@ public class MainThread extends Thread {
                             j--;
                         }
                     }
+                    if (m_panel.ship.hits(s)) {
+                        m_panel.sounds.playShortResource(R.raw.slave_seismic);
+                        m_panel.ship.energy -= 20;
+                        m_panel.shots.remove(i);
+                        i--;
+                    }
                 }
 
                 // render state to the screen
@@ -54,7 +59,11 @@ public class MainThread extends Thread {
 
                 if (m_panel.droids.size() == 0) {
                     // All droids destroyed -> level done
-                    m_panel.drawFinish();
+                    m_panel.drawFinish(true);
+                    running = false;
+                }
+                if (m_panel.ship.energy <= 0) {
+                    m_panel.drawFinish(false);
                     running = false;
                 }
                 Thread.sleep(10, 0);
