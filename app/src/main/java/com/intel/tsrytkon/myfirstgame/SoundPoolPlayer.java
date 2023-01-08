@@ -22,11 +22,12 @@ public class SoundPoolPlayer {
         mSounds.put(R.raw.blaster_solo, this.mShortPlayer.load(pContext, R.raw.blaster_solo, 1));
         mSounds.put(R.raw.blaster_fail, this.mShortPlayer.load(pContext, R.raw.blaster_fail, 1));
         mSounds.put(R.raw.slave_seismic, this.mShortPlayer.load(pContext, R.raw.slave_seismic, 1));
+        this.mShortPlayer.setVolume(R.raw.blaster_solo, 0.01f,0.01f);
     }
 
     public void playShortResource(int piResource) {
         int iSoundId = (Integer) mSounds.get(piResource);
-        this.mShortPlayer.play(iSoundId, 0.99f, 0.99f, 0, 0, 1);
+        this.mShortPlayer.play(iSoundId, 0.10f, 0.10f, 0, 0, 1);
     }
 
     // Cleanup

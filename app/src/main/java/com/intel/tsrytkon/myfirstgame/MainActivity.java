@@ -2,6 +2,7 @@ package com.intel.tsrytkon.myfirstgame;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,13 +11,17 @@ import android.widget.ImageView;
 
 
 public class MainActivity extends Activity {
+    protected MediaPlayer player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        player = MediaPlayer.create(this, R.raw.test_reverb);
+        player.setLooping(true); // Set looping
+        player.setVolume(100,100);
+        player.start();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -39,9 +44,15 @@ public class MainActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        player.release();
+    }
 
     public void newGameClick(View view) {
         System.out.println("New game request!");
+        player.stop();
         Intent intent = new Intent(this, MainGameActivity.class);
         startActivity(intent);
     }
